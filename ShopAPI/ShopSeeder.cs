@@ -63,31 +63,14 @@ namespace ShopAPI
                     {
                         Email = "Test@Test",
                         PhoneNumber=12345678,
-                        FirstName="Kewin",
+                        FirstName="Janusz",
                         Address = new Address()
                         {
-                            City = "Wejherowo",
-                            Street = "blabla",
-                            ZipCode="84-200"
+                            City = "Warszawa",
+                            Street = "Pokątna",
+                            ZipCode="00-000"
                         },
                     },
-                    //Availability = true,
-                    //Products = new List<Product>()
-                    //{
-                    //    new Product()
-                    //    {
-                    //        Name = "xxx",
-                    //        Description = "xasasd",
-                    //        Category ="fajna",
-                    //        Photo = "wwwwwwww.xxxx",
-                    //        Size = "L"
-                    //    },
-
-                    //},
-                    //Status = new OrderStatus()
-                    //{
-                    //    Value = "W dostarczeniu"
-                    //},
                     OrderCode="SomeCode",
                 }
             };
@@ -101,9 +84,9 @@ namespace ShopAPI
                 new Product()
                 {
                     Name = "Koszulka",
-                    Description = "ChujDupaCycki",
+                    Description = "Description1",
                     Category = "Koszulkowa",
-                    Photo="hhtps/chujCiWDziąsło",
+                    Photo="hhtps/link",
                     //Quantity=10,
                     Size = "M",
                     //OrderId=1
@@ -111,18 +94,18 @@ namespace ShopAPI
                  new Product()
                 {
                     Name = "Koszulka1",
-                    Description = "ChujDupaCycki1",
+                    Description = "Description2",
                     Category = "Koszulkowa1",
-                    Photo="hhtps/chujCiWDziąsło1",
+                    Photo="hhtps/link2",
                     Size="XL",
                     //OrderId=1
                 },
                   new Product()
                 {
                     Name = "Koszulka2",
-                    Description = "ChujDupaCycki2",
+                    Description = "Description3",
                     Category = "Koszulkowa2",
-                    Photo="hhtps/chujCiWDziąsło2",
+                    Photo="hhtps/link3",
                     Size="L",
                     //OrderId=1
                 },
