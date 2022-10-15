@@ -10,10 +10,10 @@ namespace ShopAPI.DTO
         //Status
         public string Value { get; set; }
         //Products
-        //public string Name { get; set; }
-        //public string Description { get; set; }
-        //public string Category { get; set; }
-        //public string Size { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Category { get; set; }
+        public string Size { get; set; }
         //public int SomeOrderId { get; set; }
         //User
         public string Email { get; set; }

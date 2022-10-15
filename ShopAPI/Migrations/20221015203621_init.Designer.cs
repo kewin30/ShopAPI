@@ -10,7 +10,7 @@ using ShopAPI.Entities;
 namespace ShopAPI.Migrations
 {
     [DbContext(typeof(OrderDbContext))]
-    [Migration("20221015202139_init")]
+    [Migration("20221015203621_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

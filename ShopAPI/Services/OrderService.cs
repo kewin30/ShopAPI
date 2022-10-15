@@ -53,7 +53,7 @@ namespace ShopAPI.Services
         }
         public List<OrderDto> GetAllById(int id)
         {
-            var products = _context.Products.FirstOrDefault(x => x.SomeOrderId == id);
+            //var products = _context.Products.FirstOrDefault(x => x.SomeOrderId == id);
             var orders = _context
                 .Orders
                 .Include(x => x.CreatedBy)
