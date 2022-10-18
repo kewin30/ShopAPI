@@ -7,9 +7,13 @@ namespace ShopAPI.Entities.Configurations
     {
         public void Configure(EntityTypeBuilder<Order> builder)
         {
-            builder.HasOne(x => x.Products)
-                .WithOne()
-                .HasForeignKey<Product>(x => x.OrderId);
+            builder
+                .HasOne<Product>(x => x.Products)
+                .WithMany(p => p.Orders)
+                .HasForeignKey(x => x.ProductId);
+            //builder.HasOne(x => x.Products)
+            //    .WithOne(x => x.Orders)
+            //    .HasForeignKey<Product>(x => x.OrderId);
             builder.Property(x => x.StatusId).HasDefaultValue(4);
         }
     }

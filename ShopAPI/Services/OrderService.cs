@@ -47,7 +47,11 @@ namespace ShopAPI.Services
 
         public List<ProductDto> GetProducts()
         {
-            var products = _context.Orders.Include(x=>x.Products);
+            var products = _context.Orders.Include(x => x.Products);
+            if(products is null)
+            {
+                throw new NotFoundException("Order not found!");
+            }
             var productsDto = _mapper.Map<List<ProductDto>>(products);
             return productsDto; // NIE ZNAJDUJE PRODUKTÓW
         }
@@ -79,7 +83,7 @@ namespace ShopAPI.Services
                 .Include(x=>x.Status)
                 .Include(x=>x.Products)
                 .FirstOrDefault(x => x.Id == id);
-            if(order is null || order.Id != id)
+            if (order is null || order.Id != id)
             {
                 _logger.LogError($"Order with id {id} not found!");
                 throw new NotFoundException("Order not found!");
@@ -101,7 +105,7 @@ namespace ShopAPI.Services
             {
                 throw new NotFoundException("Product not found!");
             }
-            order.SomeOrderId = dto.OrderId;
+            //order.SomeOrderId = dto.OrderId;
             _context.SaveChanges();
         }
 

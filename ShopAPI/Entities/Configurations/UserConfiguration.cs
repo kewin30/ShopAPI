@@ -7,9 +7,9 @@ namespace ShopAPI.Entities.Configurations
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.HasOne(x => x.Address)
-                .WithOne(u => u.User)
-                .HasForeignKey<Address>(a => a.UserId);
+            //builder.HasOne(x => x.Address)
+            //    .WithOne(u => u.User)
+            //    .HasForeignKey<Address>(a => a.UserId);
             builder.Property(x => x.Email).IsRequired();
             builder.Property(x => x.PhoneNumber).IsRequired();
         }

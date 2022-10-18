@@ -15,6 +15,7 @@ namespace ShopAPI
                 .ForMember(x => x.Street, x => x.MapFrom(s => s.Address.Street))
                 .ForMember(x => x.ZipCode, x => x.MapFrom(s => s.Address.ZipCode))
                 .ForMember(x => x.BuildingNumber, x => x.MapFrom(s => s.Address.BuildingNumber));
+
             CreateMap<Order, OrderDto>()
                 .ForMember(x => x.Email, x => x.MapFrom(s => s.CreatedBy.Email))
                 .ForMember(x => x.PhoneNumber, x => x.MapFrom(s => s.CreatedBy.PhoneNumber))
@@ -23,10 +24,6 @@ namespace ShopAPI
                 .ForMember(x => x.Street, x => x.MapFrom(s => s.CreatedBy.Address.Street))
                 .ForMember(x => x.ZipCode, x => x.MapFrom(s => s.CreatedBy.Address.ZipCode))
                 .ForMember(x => x.BuildingNumber, x => x.MapFrom(s => s.CreatedBy.Address.BuildingNumber))
-                .ForMember(x => x.Name, x => x.MapFrom(s => s.Products.Name))
-                .ForMember(x => x.Description, x => x.MapFrom(s => s.Products.Description))
-                .ForMember(x => x.Category, x => x.MapFrom(s => s.Products.Category))
-                .ForMember(x => x.Size, x => x.MapFrom(s => s.Products.Size))
                 .ForMember(x => x.Value, x => x.MapFrom(s => s.Status.Value)
                 );
             CreateMap<Order, ProductDto>()
@@ -34,6 +31,8 @@ namespace ShopAPI
                 .ForMember(x => x.Description, x => x.MapFrom(s => s.Products.Description))
                 .ForMember(x => x.Category, x => x.MapFrom(s => s.Products.Category))
                 .ForMember(x => x.Size, x => x.MapFrom(s => s.Products.Size));
+
+            CreateMap<Order, ProductDto>();
         }
     }
 }

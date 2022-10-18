@@ -71,6 +71,13 @@ namespace ShopAPI
                             ZipCode="00-000"
                         },
                     },
+                    Products = new Product()
+                    {
+                        Name = "Testowy",
+                        Description = "Desc",
+                        Category = "Koszulkowa",
+                        Size = "L"
+                    },
                     OrderCode="SomeCode",
                 }
             };

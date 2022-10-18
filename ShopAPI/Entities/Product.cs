@@ -1,4 +1,7 @@
-﻿namespace ShopAPI.Entities
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ShopAPI.Entities
 {
     public class Product
     {
@@ -7,10 +10,8 @@
         public string Description { get; set; }
         public string Category { get; set; }
         public string Photo { get; set; }
-        //public int Quantity { get; set; }
         public string Size { get; set; }
-        public int SomeOrderId { get; set; }
-        public virtual Order Order { get; set; }
+        public List<Order> Orders { get; set; }
         public int? OrderId { get; set; }
     }
 }
