@@ -13,7 +13,7 @@ namespace ShopAPI.Services
     {
         OrderDto GetById(int id);
         List<OrderDto> GetAllById(int id);
-        List<ProductDto> GetProducts();
+        ProductDto GetProducts();
         void Delete(int id);
         void MakeOrder(int id, MakeOrderDto order);
         void UpdateStatusId(int id, UpdateStatusDto dto);
@@ -45,14 +45,15 @@ namespace ShopAPI.Services
             _context.SaveChanges();
         }
 
-        public List<ProductDto> GetProducts()
+        public ProductDto GetProducts()
         {
             var products = _context.Orders.Include(x => x.Products);
+            var queryString = products.ToQueryString();
             if(products is null)
             {
                 throw new NotFoundException("Order not found!");
             }
-            var productsDto = _mapper.Map<List<ProductDto>>(products);
+            var productsDto = _mapper.Map<ProductDto>(products);
             return productsDto; // NIE ZNAJDUJE PRODUKTÓW
         }
         public List<OrderDto> GetAllById(int id)

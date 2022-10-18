@@ -49,7 +49,7 @@ namespace ShopAPI.Controllers
             return Ok(products);
         }
         [HttpGet]
-        public ActionResult<IEnumerable<ProductDto>> GetAll()
+        public ActionResult<ProductDto> GetAll()
         {
             var products = _orderService.GetProducts();
             return Ok(products);
