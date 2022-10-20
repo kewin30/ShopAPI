@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ShopAPI.DTO.Order;
 using ShopAPI.DTO.Products;
+using ShopAPI.DTO.User;
 using ShopAPI.Entities;
 using ShopAPI.Services;
 using System.Collections.Generic;
@@ -25,10 +26,10 @@ namespace ShopAPI.Controllers
             var order = _orderService.GetById(orderId);
             return Ok(order);
         }
-        [HttpGet]
-        public ActionResult<ProductDto> GetAll()
+        [HttpPost]
+        public ActionResult<ProductDto> GetAll([FromBody]LoginDto dto)
         {
-            var products = _orderService.GetProducts();
+            var products = _orderService.GetProducts(dto);
             return Ok(products);
         }
         [HttpDelete("{id}")]
