@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShopAPI.DTO;
+using ShopAPI.DTO.Products;
 using ShopAPI.Entities;
 using ShopAPI.Services;
 using System.Collections.Generic;
@@ -21,29 +21,22 @@ namespace ShopAPI.Controllers
         }
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public ActionResult Post([FromBody]ProductDto dto)
+        public ActionResult Post([FromBody]CreateProductDto dto)
         {
             _productController.Create(dto);
             return Ok();
         }
         [HttpGet("{productId}")]
-        public ActionResult<ProductDto> Get([FromRoute] int productId)
+        public ActionResult<GetProductsDto> Get([FromRoute] int productId)
         {
             var product = _productController.GetById(productId);
             return Ok(product);
         }
         [HttpGet]
-        public ActionResult<IEnumerable<ProductDto>> Get()
+        public ActionResult<IEnumerable<GetProductsDto>> Get()
         {
             var products = _productController.GetAll();
             return Ok(products);
-        }
-        [HttpPut("{productId}")]
-        [Authorize(Roles ="Admin")]
-        public ActionResult Update([FromRoute]int productId, [FromBody] ChangeQuantityProductDto dto)
-        {
-            _productController.ChangeQuantity(productId, dto);
-            return NoContent();
         }
     }
 }

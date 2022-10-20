@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using ShopAPI.DTO;
+using ShopAPI.DTO.Order;
+using ShopAPI.DTO.Products;
 using ShopAPI.Entities;
 using ShopAPI.Services;
 using System.Collections.Generic;
@@ -24,6 +25,12 @@ namespace ShopAPI.Controllers
             var order = _orderService.GetById(orderId);
             return Ok(order);
         }
+        [HttpGet]
+        public ActionResult<ProductDto> GetAll()
+        {
+            var products = _orderService.GetProducts();
+            return Ok(products);
+        }
         [HttpDelete("{id}")]
         public ActionResult Delete([FromRoute] int id)
         {
@@ -42,18 +49,13 @@ namespace ShopAPI.Controllers
             _orderService.UpdateStatusId(id,dto);
             return NoContent();
         }
-        [HttpGet("user/{Id}")]
-        public ActionResult<IEnumerable<ProductDto>> GetById(int Id)
-        {
-            var products = _orderService.GetAllById(Id);
-            return Ok(products);
-        }
-        [HttpGet]
-        public ActionResult<ProductDto> GetAll()
-        {
-            var products = _orderService.GetProducts();
-            return Ok(products);
-        }
+        //[HttpGet("user/{Id}")]
+        //public ActionResult<IEnumerable<ProductDto>> GetById(int Id)
+        //{
+        //    var products = _orderService.GetAllById(Id);
+        //    return Ok(products);
+        //}
+
 
     }
 }

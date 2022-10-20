@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using ShopAPI.DTO;
+using ShopAPI.DTO.Order;
+using ShopAPI.DTO.Products;
 using ShopAPI.Entities;
 using ShopAPI.Exceptions;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace ShopAPI.Services
     public interface IOrderService
     {
         OrderDto GetById(int id);
-        List<OrderDto> GetAllById(int id);
+       // List<OrderDto> GetAllById(int id);
         ProductDto GetProducts();
         void Delete(int id);
         void MakeOrder(int id, MakeOrderDto order);
@@ -47,8 +48,10 @@ namespace ShopAPI.Services
 
         public ProductDto GetProducts()
         {
-            var products = _context.Orders.Include(x => x.Products);
-            var queryString = products.ToQueryString();
+            //var products = _context.Orders.Select(x => x.Products).ToList(); Working
+            var products = _context.Orders.Include(x => x.Products).FirstOrDefault(x=>x.Id==1);
+
+            //var queryString = products.ToQueryString();
             if(products is null)
             {
                 throw new NotFoundException("Order not found!");
@@ -56,22 +59,22 @@ namespace ShopAPI.Services
             var productsDto = _mapper.Map<ProductDto>(products);
             return productsDto; // NIE ZNAJDUJE PRODUKTÓW
         }
-        public List<OrderDto> GetAllById(int id)
-        {
-            //var products = _context.Products.FirstOrDefault(x => x.SomeOrderId == id);
-            var orders = _context
-                .Orders
-                .Include(x => x.CreatedBy)
-                .Include(x => x.CreatedBy.Address)
-                .Include(x => x.Status)
-                .Include(x => x.Products);
-            if(orders is null)
-            {
-                throw new NotFoundException("Order not found!");
-            }
-            var orderDtos = _mapper.Map<List<OrderDto>>(orders);
-            return orderDtos;
-        }
+        //public List<OrderDto> GetAllById(int id)
+        //{
+        //    var orders = _context
+        //        .Orders
+        //        .Include(x => x.CreatedBy)
+        //        .Include(x => x.CreatedBy.Address)
+        //        .Include(x => x.Status)
+        //        .Include(x => x.Products)
+        //        .FirstOrDefault(x=>x.Id==id);
+        //    if(orders is null)
+        //    {
+        //        throw new NotFoundException("Order not found!");
+        //    }
+        //    var orderDtos = _mapper.Map<List<OrderDto>>(orders);
+        //    return orderDtos;
+        //}
 
         public OrderDto GetById(int id)
         {
@@ -94,11 +97,12 @@ namespace ShopAPI.Services
         }
         public void MakeOrder(int id, MakeOrderDto dto)
         {
-            var orderId = _context.Orders.FirstOrDefault(x => x.Id == dto.OrderId);
-            if(orderId.Id != dto.OrderId)
-            {
-                throw new NotFoundException("Order not found!");
-            }
+            //var orderId =_context.Orders.FirstOrDefault(x => x.Id == id);
+            
+            //if(orderId.Id != dto.OrderId)
+            //{
+            //    throw new NotFoundException("Order not found!");
+            //}
             var order = _context
                 .Products
                 .FirstOrDefault(r => r.Id == id);
@@ -106,13 +110,13 @@ namespace ShopAPI.Services
             {
                 throw new NotFoundException("Product not found!");
             }
-            //order.SomeOrderId = dto.OrderId;
+            order.OrderId = 1;
             _context.SaveChanges();
         }
 
         public void UpdateStatusId(int id, UpdateStatusDto dto)
         {
-            var status = _context.Orders.FirstOrDefault(x => x.Id == id);
+            Order status = _context.Orders.FirstOrDefault(x => x.Id == id);
             if(status is null)
             {
                 throw new NotFoundException("Order not found!");

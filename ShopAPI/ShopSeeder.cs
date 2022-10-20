@@ -71,13 +71,6 @@ namespace ShopAPI
                             ZipCode="00-000"
                         },
                     },
-                    Products = new Product()
-                    {
-                        Name = "Testowy",
-                        Description = "Desc",
-                        Category = "Koszulkowa",
-                        Size = "L"
-                    },
                     OrderCode="SomeCode",
                 }
             };
@@ -94,9 +87,7 @@ namespace ShopAPI
                     Description = "Description1",
                     Category = "Koszulkowa",
                     Photo="hhtps/link",
-                    //Quantity=10,
                     Size = "M",
-                    //OrderId=1
                 },
                  new Product()
                 {
@@ -105,7 +96,6 @@ namespace ShopAPI
                     Category = "Koszulkowa1",
                     Photo="hhtps/link2",
                     Size="XL",
-                    //OrderId=1
                 },
                   new Product()
                 {
@@ -114,7 +104,6 @@ namespace ShopAPI
                     Category = "Koszulkowa2",
                     Photo="hhtps/link3",
                     Size="L",
-                    //OrderId=1
                 },
             };
             return orders;

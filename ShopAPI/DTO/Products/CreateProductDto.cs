@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ShopAPI.DTO
+namespace ShopAPI.DTO.Products
 {
-    public class ProductDto
+    public class CreateProductDto
     {
-        public int Id { get; set; }
+        [Required]
         public string Name { get; set; }
         public string Description { get; set; }
         public string Category { get; set; }

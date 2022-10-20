@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using ShopAPI.DTO;
+using ShopAPI.DTO.User;
+using ShopAPI.DTO.User_Address;
 using ShopAPI.Entities;
 using ShopAPI.Exceptions;
 using System;
@@ -18,7 +19,6 @@ namespace ShopAPI.Services
     {
         void RegisterUser(RegisterUserAndAddressDto dto);
         string GenerateJwt(LoginDto dto);
-        GetUserAndAddress GetById(int id);
     }
     public class AccountService : IAccountService
     {
@@ -94,15 +94,6 @@ namespace ShopAPI.Services
             newUser.PasswordHash = hashedPassword;
             _context.Users.Add(newUser);
             _context.SaveChanges();
-        }
-        public GetUserAndAddress GetById(int id)
-        {
-            var users = _context
-                .Users
-                .Include(x => x.Address)
-                .FirstOrDefault(x => x.Id == id);
-            var result = _mapper.Map<GetUserAndAddress>(users);
-            return result;
         }
     }
 }

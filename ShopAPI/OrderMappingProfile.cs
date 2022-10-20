@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
-using ShopAPI.DTO;
+using ShopAPI.DTO.Order;
+using ShopAPI.DTO.Products;
+using ShopAPI.DTO.User_Address;
 using ShopAPI.Entities;
 
 namespace ShopAPI
@@ -26,12 +28,10 @@ namespace ShopAPI
                 .ForMember(x => x.BuildingNumber, x => x.MapFrom(s => s.CreatedBy.Address.BuildingNumber))
                 .ForMember(x => x.Value, x => x.MapFrom(s => s.Status.Value)
                 );
-            CreateMap<Order, ProductDto>()
-                .ForMember(x => x.Name, x => x.MapFrom(s => s.Products.Name))
-                .ForMember(x => x.Description, x => x.MapFrom(s => s.Products.Description))
-                .ForMember(x => x.Category, x => x.MapFrom(s => s.Products.Category))
-                .ForMember(x => x.Size, x => x.MapFrom(s => s.Products.Size));
-
+            CreateMap<Order, ProductsTest>();
+            CreateMap<Product, ProductsTest>();
+            CreateMap<CreateProductDto , Product>();
+            CreateMap<Product, GetProductsDto>();
             CreateMap<Order, ProductDto>();
         }
     }

@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using ShopAPI.DTO.User;
 using ShopAPI.Entities;
 using System.Linq;
 

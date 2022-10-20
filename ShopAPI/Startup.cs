@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using ShopAPI.DTO;
+using ShopAPI.DTO.User;
 using ShopAPI.DTO.Validators;
 using ShopAPI.Entities;
 using ShopAPI.Exceptions;

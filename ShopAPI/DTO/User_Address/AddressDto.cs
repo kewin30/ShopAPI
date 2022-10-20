@@ -1,4 +1,4 @@
-﻿namespace ShopAPI.DTO
+﻿namespace ShopAPI.DTO.User
 {
     public class AddressDto
     {

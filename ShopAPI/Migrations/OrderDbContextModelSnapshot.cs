@@ -74,9 +74,6 @@ namespace ShopAPI.Migrations
                     b.Property<string>("OrderCode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ProductId")
-                        .HasColumnType("int");
-
                     b.Property<int>("StatusId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
@@ -85,8 +82,6 @@ namespace ShopAPI.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedById");
-
-                    b.HasIndex("ProductId");
 
                     b.HasIndex("StatusId");
 
@@ -158,12 +153,17 @@ namespace ShopAPI.Migrations
                     b.Property<string>("Photo")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ProductCode")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Size")
                         .IsRequired()
                         .HasMaxLength(2)
                         .HasColumnType("nvarchar(2)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
 
                     b.ToTable("Products");
                 });
@@ -240,10 +240,6 @@ namespace ShopAPI.Migrations
                         .WithMany()
                         .HasForeignKey("CreatedById");
 
-                    b.HasOne("ShopAPI.Entities.Product", "Products")
-                        .WithMany("Orders")
-                        .HasForeignKey("ProductId");
-
                     b.HasOne("ShopAPI.Entities.OrderStatus", "Status")
                         .WithMany()
                         .HasForeignKey("StatusId")
@@ -252,9 +248,16 @@ namespace ShopAPI.Migrations
 
                     b.Navigation("CreatedBy");
 
-                    b.Navigation("Products");
-
                     b.Navigation("Status");
+                });
+
+            modelBuilder.Entity("ShopAPI.Entities.Product", b =>
+                {
+                    b.HasOne("ShopAPI.Entities.Order", "Orders")
+                        .WithMany("Products")
+                        .HasForeignKey("OrderId");
+
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("ShopAPI.Entities.User", b =>
@@ -268,9 +271,9 @@ namespace ShopAPI.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("ShopAPI.Entities.Product", b =>
+            modelBuilder.Entity("ShopAPI.Entities.Order", b =>
                 {
-                    b.Navigation("Orders");
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("ShopAPI.Entities.User", b =>

@@ -1,12 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace ShopAPI.DTO
+﻿namespace ShopAPI.DTO.Products
 {
-    public class CreateProductDto
+    public class GetProductsDto
     {
-        [Required]
         public string Name { get; set; }
         public string Description { get; set; }
         public string Category { get; set; }
+        public string Size { get; set; }
     }
 }

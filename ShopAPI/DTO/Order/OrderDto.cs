@@ -1,20 +1,17 @@
-﻿using System;
+﻿using ShopAPI.DTO.Products;
+using System;
 using System.Collections.Generic;
 
-namespace ShopAPI.DTO
+namespace ShopAPI.DTO.Order
 {
     public class OrderDto
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
         public DateTime? DateOfOrder { get; set; }
         //Status
         public string Value { get; set; }
         //Products
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; }
-        public string Size { get; set; }
-        //public int SomeOrderId { get; set; }
+        public List<ProductsTest> Products { get; set; }
         //User
         public string Email { get; set; }
         public int PhoneNumber { get; set; }
@@ -24,6 +21,6 @@ namespace ShopAPI.DTO
         public string Street { get; set; }
         public string ZipCode { get; set; }
         public int BuildingNumber { get; set; }
-        
+
     }
 }
