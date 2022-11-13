@@ -14,7 +14,7 @@ namespace ShopAPI
         }
         public void Seed()
         {
-            if(_dbContext.Database.CanConnect())
+            if (_dbContext.Database.CanConnect())
             {
                 if (!_dbContext.Products.Any())
                 {
@@ -64,12 +64,12 @@ namespace ShopAPI
                         Email = "Test@Test",
                         PhoneNumber=12345678,
                         FirstName="Janusz",
-                        Address = new Address()
-                        {
+                    },
+                    Address = new Address()
+                    {
                             City = "Warszawa",
                             Street = "Pokątna",
                             ZipCode="00-000"
-                        },
                     },
                     OrderCode="SomeCode",
                 }
@@ -77,7 +77,7 @@ namespace ShopAPI
             return orders;
         }
 
-    private IEnumerable<Product> GetProducts()
+        private IEnumerable<Product> GetProducts()
         {
             var orders = new List<Product>()
             {

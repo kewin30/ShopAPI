@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShopAPI.DTO.Order;
 using ShopAPI.DTO.Products;
@@ -21,42 +22,38 @@ namespace ShopAPI.Controllers
             _orderService = orderService;
         }
         [HttpGet("{orderId}")]
+        //[Authorize(Roles = "User")]
         public ActionResult<OrderDto> Get([FromRoute] int orderId)
         {
             var order = _orderService.GetById(orderId);
             return Ok(order);
         }
-        [HttpPost]
-        public ActionResult<ProductDto> GetAll([FromBody]LoginDto dto)
-        {
-            var products = _orderService.GetProducts(dto);
-            return Ok(products);
-        }
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete([FromRoute] int id)
         {
             _orderService.Delete(id);
             return NoContent();
         }
-        [HttpPut("{id}")]
-        public ActionResult Update([FromRoute] int id, [FromBody] MakeOrderDto dto)
+        [HttpPost]
+        [Authorize(Roles = "User")]
+        public ActionResult Create([FromBody] MakeOrderDto dto)
         {
-            _orderService.MakeOrder(id,dto);
+            _orderService.CreateOrder(dto);
+            return NoContent();
+        }
+        [HttpPost("NoLogin")]
+        public ActionResult CreateWithoutLogin([FromBody] MakeOrderDto dto)
+        {
+            _orderService.CreateOrderWithoutLogin(dto);
             return NoContent();
         }
         [HttpPut("status/{id}")]
+        [Authorize(Roles = "Admin")]
         public ActionResult UpdateStatus([FromRoute] int id,UpdateStatusDto dto)
         {
             _orderService.UpdateStatusId(id,dto);
             return NoContent();
         }
-        //[HttpGet("user/{Id}")]
-        //public ActionResult<IEnumerable<ProductDto>> GetById(int Id)
-        //{
-        //    var products = _orderService.GetAllById(Id);
-        //    return Ok(products);
-        //}
-
-
     }
 }

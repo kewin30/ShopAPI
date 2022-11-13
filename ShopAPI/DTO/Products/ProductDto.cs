@@ -8,6 +8,6 @@ namespace ShopAPI.DTO.Products
         public int Id { get; set; }
         public string OrderCode { get; set; }
         public int StatusId { get; set; }
-        public List<ProductsTest> Products { get; set; }
+        public List<GetProductsDto> Products { get; set; }
     }
 }

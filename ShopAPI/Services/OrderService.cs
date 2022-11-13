@@ -5,20 +5,23 @@ using Microsoft.Extensions.Logging;
 using ShopAPI.DTO.Order;
 using ShopAPI.DTO.Products;
 using ShopAPI.DTO.User;
+using ShopAPI.DTO.User_Address;
 using ShopAPI.Entities;
 using ShopAPI.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 
 namespace ShopAPI.Services
 {
     public interface IOrderService
     {
         OrderDto GetById(int id);
-        ProductDto GetProducts(LoginDto dto);
         void Delete(int id);
-        void MakeOrder(int id, MakeOrderDto order);
+        void CreateOrder(MakeOrderDto order);
+        void CreateOrderWithoutLogin(MakeOrderDto order);
         void UpdateStatusId(int id, UpdateStatusDto dto);
     }
     public class OrderService : IOrderService
@@ -49,8 +52,9 @@ namespace ShopAPI.Services
             _context.Orders.Remove(orders);
             _context.SaveChanges();
         }
-        public string ReturnUserId(LoginDto dto)
+        private string ReturnUserId(MakeOrderDto dto)
         {
+            _logger.LogWarning("User ReturnUserId method invoked!");
             var user = _context.Users.Include(u => u.Role).FirstOrDefault(u => u.Email == dto.Email);
             if (user is null)
             {
@@ -65,45 +69,13 @@ namespace ShopAPI.Services
             {
                 new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
             };
-            string test="";
+            string userId="";
             foreach (var item in claims)
             {
-                test = item.Value;
+                userId = item.Value;
             }
-            return test;
+            return userId;
         }
-
-        public ProductDto GetProducts(LoginDto dto)
-        {
-            ReturnUserId(dto);
-            //var products = _context.Orders.Select(x => x.Products).ToList(); Working
-            var products = _context.Orders.Include(x => x.Products).FirstOrDefault(x=>x.Id==1);
-
-            //var queryString = products.ToQueryString();
-            if(products is null)
-            {
-                throw new NotFoundException("Order not found!");
-            }
-            var productsDto = _mapper.Map<ProductDto>(products);
-            return productsDto; // NIE ZNAJDUJE PRODUKTÓW
-        }
-        //public List<OrderDto> GetAllById(int id)
-        //{
-        //    var orders = _context
-        //        .Orders
-        //        .Include(x => x.CreatedBy)
-        //        .Include(x => x.CreatedBy.Address)
-        //        .Include(x => x.Status)
-        //        .Include(x => x.Products)
-        //        .FirstOrDefault(x=>x.Id==id);
-        //    if(orders is null)
-        //    {
-        //        throw new NotFoundException("Order not found!");
-        //    }
-        //    var orderDtos = _mapper.Map<List<OrderDto>>(orders);
-        //    return orderDtos;
-        //}
-
         public OrderDto GetById(int id)
         {
             _logger.LogWarning($"Order with ID {id} GetById action invoked");
@@ -111,7 +83,7 @@ namespace ShopAPI.Services
             var order = _context
                 .Orders
                 .Include(x=>x.CreatedBy)
-                .Include(x => x.CreatedBy.Address)
+                .Include(x => x.Address)
                 .Include(x=>x.Status)
                 .Include(x=>x.Products)
                 .FirstOrDefault(x => x.Id == id);
@@ -123,24 +95,113 @@ namespace ShopAPI.Services
             var orderDto = _mapper.Map<OrderDto>(order);
             return orderDto;
         }
-        public void MakeOrder(int id, MakeOrderDto dto)
+        public void CreateOrder(MakeOrderDto dto)
         {
-            var product = _context
-                .Products
-                .FirstOrDefault(r => r.Id == id);
-            if(product is null)
-            {
-                throw new NotFoundException("Product not found!");
-            }
-            var order = _context.Orders.FirstOrDefault(r => r.Id == dto.OrderId);
-            if(order is null)
-            {
-                throw new NotFoundException("Order not found!");
-            }
-            product.OrderId = dto.OrderId;
+            _logger.LogWarning("Order CREATE action invoked!");
+            string userId = ReturnUserId(dto);
+
+            UserOrderDto userOrder = setOrderDto(dto,userId);
+            var orderDto = _mapper.Map<Order>(userOrder);
+
+            _context.SaveChanges();
+            _context.Orders.Add(orderDto);
+            _context.SaveChanges();
+
+            int latestOrderId = orderDto.Id;
+
+            setProducts(dto, latestOrderId);
+
+            Address address = setAddress(dto,latestOrderId);
+            _context.Addresses.Add(address);
+
+            //ProductCodes(dto);
             _context.SaveChanges();
         }
+        private void setProducts(MakeOrderDto dto, int latestOrderId)
+        {
+            foreach (var item in dto.ProductCode)
+            {
+                var checkProducts = _context.Products
+                    .FirstOrDefault(x => x.ProductCode == item.ProductCode);
+                if (checkProducts is null)
+                {
+                    throw new NotFoundException("Product not found!");
+                }
+                var productsQuantity = _context.Products
+                    .Where(x => x.ProductCode == item.ProductCode)
+                    .Where(x => x.OrderId == null)
+                    .Count();
+                if (item.Quantity > productsQuantity)
+                {
+                    throw new NotFoundException("Too many products has been chosen");
+                }
+            }
+            foreach (var item in dto.ProductCode)
+            {
+                for (int i = 0; i < item.Quantity; i++)
+                {
+                    var products = _context.Products.Where(x => x.OrderId == null).FirstOrDefault(x=>x.ProductCode==item.ProductCode);
+                    products.OrderId=latestOrderId;
+                    _context.SaveChanges();
+                }
+            }
+            
+        }
+        private UserOrderDto setOrderDto(MakeOrderDto dto, string userId)
+        {
+            UserOrderDto userOrder = new UserOrderDto()
+            {
+                CreatedById = Convert.ToInt32(userId),
+                DateOfOrder = dto.DateOfOrder,
+            };
+            return userOrder;
+        }
+        private Address setAddress(MakeOrderDto dto, int latestOrderId)
+        {
+            Address address = new Address()
+            {
+                City = dto.City,
+                Street = dto.Street,
+                ZipCode = dto.ZipCode,
+                BuildingNumber = dto.BuildingNumber,
+                FlatNumber = dto.FlatNumber,
+                OrderId = latestOrderId
+            };
+            return address;
+        }
+        private void ProductCodes(MakeOrderDto dto)
+        {
 
+            Regex re = new Regex(@"\d+");
+            List<Match> matches = new List<Match>();
+            //Matches - miejsce gdzie zaczyna się liczba w INDEX
+            //Matches - value - wartość liczby
+            List<string> products = new List<string>();
+            foreach (var item in dto.ProductCode)
+            {
+                matches.Add(re.Match(item.ProductCode));
+                for (int i = 0; i < item.ProductCode.Length; i++)
+                {
+                    string proba = "";
+                    foreach (var item1 in matches)
+                    {
+                        if(i != Convert.ToInt32(item1.Value))
+                        {
+                            proba += item.ProductCode;
+                        }
+                        if (i == Convert.ToInt32(item1.Value))
+                        {
+                            for (int j = 0; j < item.Quantity; j++)
+                            {
+                                int test = Convert.ToInt32(item1.Value) + j;
+                                string concat = proba + test;
+                                products.Add(concat);
+                            }
+                        }
+                    }      
+                }
+            }
+        }
         public void UpdateStatusId(int id, UpdateStatusDto dto)
         {
             Order status = _context.Orders.FirstOrDefault(x => x.Id == id);
@@ -153,6 +214,41 @@ namespace ShopAPI.Services
                 throw new BadRequestException("Wrong Id");
             }
             status.StatusId = dto.StatusId;
+            _context.SaveChanges();
+        }
+
+        public void CreateOrderWithoutLogin(MakeOrderDto order)
+        {
+            _logger.LogWarning("Order CREATE_ORDER_WITHOUT_LOGIN action invoked!");
+
+            UserDto userDto = new UserDto()
+            {
+                Email = order.Email,
+                Password = null,
+                PhoneNumber = order.PhoneNumber,
+                FirstName = order.FirstName
+            };
+            var userMapDto = _mapper.Map<User>(userDto);
+            _context.Users.Add(userMapDto);
+            _context.SaveChanges();
+
+            UserOrderDto userOrder = new UserOrderDto()
+            {
+                CreatedById = userMapDto.Id,
+                DateOfOrder = order.DateOfOrder,
+            };
+            var orderDto = _mapper.Map<Order>(userOrder);
+
+            _context.Orders.Add(orderDto);
+            _context.SaveChanges();
+
+            int latestOrderId = orderDto.Id;
+
+            setProducts(order, latestOrderId);
+
+            Address address = setAddress(order, latestOrderId);
+            _context.Addresses.Add(address);
+
             _context.SaveChanges();
         }
     }

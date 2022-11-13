@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShopAPI.DTO.User;
-using ShopAPI.DTO.User_Address;
 using ShopAPI.Entities;
 using ShopAPI.Services;
 using System.Collections.Generic;
@@ -32,11 +31,5 @@ namespace ShopAPI.Controllers
             string token = _accountService.GenerateJwt(dto);
             return Ok(token);
         }
-        //[HttpGet("{id}")]
-        //public ActionResult<GetUserAndAddress> Get([FromRoute]int id)
-        //{
-        //    var users = _accountService.GetById(id);
-        //    return Ok(users);
-        //}
     }
 }

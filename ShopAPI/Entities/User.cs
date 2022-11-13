@@ -14,7 +14,7 @@ namespace ShopAPI.Entities
         public string LastName { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public string Nationality { get; set; }
-        public virtual Address Address { get; set; }
+        
         public virtual Role Role { get; set; }
         public int RoleId { get; set; } = 2;
     }

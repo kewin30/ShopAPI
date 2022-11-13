@@ -9,7 +9,7 @@ namespace ShopAPI.Entities.Configurations
         {
             builder.Property(x => x.Name).IsRequired().HasMaxLength(30);
             builder.Property(x => x.Description).IsRequired().HasMaxLength(250);
-            builder.Property(x => x.Size).IsRequired().HasMaxLength(2);
+            builder.Property(x => x.Size).IsRequired().HasMaxLength(3);
         }
     }
 }

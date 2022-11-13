@@ -11,6 +11,7 @@ namespace ShopAPI.Entities
         public string Category { get; set; }
         public string Photo { get; set; }
         public string Size { get; set; }
+        public int Price { get; set; }
         public virtual Order Orders { get; set; }
         public int? OrderId { get; set; }
         public string ProductCode { get; set; }

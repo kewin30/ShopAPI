@@ -37,13 +37,13 @@ namespace ShopAPI.Migrations
                     b.Property<int?>("FlatNumber")
                         .HasColumnType("int");
 
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Street")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
 
                     b.Property<string>("ZipCode")
                         .IsRequired()
@@ -52,7 +52,7 @@ namespace ShopAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
+                    b.HasIndex("OrderId")
                         .IsUnique();
 
                     b.ToTable("Addresses");
@@ -65,7 +65,7 @@ namespace ShopAPI.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int?>("CreatedById")
+                    b.Property<int>("CreatedById")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("DateOfOrder")
@@ -153,13 +153,16 @@ namespace ShopAPI.Migrations
                     b.Property<string>("Photo")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Price")
+                        .HasColumnType("int");
+
                     b.Property<string>("ProductCode")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Size")
                         .IsRequired()
-                        .HasMaxLength(2)
-                        .HasColumnType("nvarchar(2)");
+                        .HasMaxLength(3)
+                        .HasColumnType("nvarchar(3)");
 
                     b.HasKey("Id");
 
@@ -199,6 +202,7 @@ namespace ShopAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
@@ -225,20 +229,22 @@ namespace ShopAPI.Migrations
 
             modelBuilder.Entity("ShopAPI.Entities.Address", b =>
                 {
-                    b.HasOne("ShopAPI.Entities.User", "User")
+                    b.HasOne("ShopAPI.Entities.Order", "Order")
                         .WithOne("Address")
-                        .HasForeignKey("ShopAPI.Entities.Address", "UserId")
+                        .HasForeignKey("ShopAPI.Entities.Address", "OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("ShopAPI.Entities.Order", b =>
                 {
                     b.HasOne("ShopAPI.Entities.User", "CreatedBy")
                         .WithMany()
-                        .HasForeignKey("CreatedById");
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ShopAPI.Entities.OrderStatus", "Status")
                         .WithMany()
@@ -273,12 +279,9 @@ namespace ShopAPI.Migrations
 
             modelBuilder.Entity("ShopAPI.Entities.Order", b =>
                 {
-                    b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("ShopAPI.Entities.User", b =>
-                {
                     b.Navigation("Address");
+
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

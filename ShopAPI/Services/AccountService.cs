@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ShopAPI.DTO.User;
-using ShopAPI.DTO.User_Address;
 using ShopAPI.Entities;
 using ShopAPI.Exceptions;
 using System;
@@ -81,14 +80,6 @@ namespace ShopAPI.Services
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 DateOfBirth = dto.DateOfBirth,
-                Address = new Address()
-                {
-                    City = dto.City,
-                    Street = dto.Street,
-                    ZipCode = dto.ZipCode,
-                    BuildingNumber = dto.BuildingNumber,
-                    FlatNumber = dto.FlatNumber
-                }
             };
             var hashedPassword = _passwordHasher.HashPassword(newUser, dto.Password);
             newUser.PasswordHash = hashedPassword;

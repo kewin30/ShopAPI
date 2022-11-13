@@ -12,6 +12,7 @@ namespace ShopAPI.Entities.Configurations
             //    .HasForeignKey<Address>(a => a.UserId);
             builder.Property(x => x.Email).IsRequired();
             builder.Property(x => x.PhoneNumber).IsRequired();
+            builder.Property(x => x.FirstName).IsRequired();
         }
     }
 }
