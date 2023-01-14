@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -30,12 +31,16 @@ namespace ShopAPI.Services
         private readonly IMapper _mapper;
         private readonly ILogger<OrderService> _logger;
         private readonly IPasswordHasher<User> _passwordHasher;
-        public OrderService(OrderDbContext context, IMapper mapper, ILogger<OrderService> logger, IPasswordHasher<User> passwordHasher)
+        private readonly IAuthorizationService authorizationService;
+        private readonly IUserContextService userContextService;
+        public OrderService(OrderDbContext context, IMapper mapper, ILogger<OrderService> logger, IPasswordHasher<User> passwordHasher, IAuthorizationService authorizationService, IUserContextService userContextService)
         {
             _context = context;
             _mapper = mapper;
             _logger = logger;
             _passwordHasher = passwordHasher;
+            this.authorizationService = authorizationService;
+            this.userContextService = userContextService;
         }
 
         public void Delete(int id)
@@ -49,6 +54,13 @@ namespace ShopAPI.Services
                 _logger.LogError($"Order with id {id} not found");
                 throw new NotFoundException("Order not found!");
             }
+            var authorizationResult = authorizationService.AuthorizeAsync(userContextService.User, orders,
+             new ResourceOperationRequirement(ResourceOperation.Delete)).Result;
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbidException();
+            }
+
             _context.Orders.Remove(orders);
             _context.SaveChanges();
         }
@@ -98,6 +110,7 @@ namespace ShopAPI.Services
         public void CreateOrder(MakeOrderDto dto)
         {
             _logger.LogWarning("Order CREATE action invoked!");
+            CheckIfProductCodeIsEmpty(dto);
             string userId = ReturnUserId(dto);
 
             UserOrderDto userOrder = setOrderDto(dto,userId);
@@ -216,10 +229,21 @@ namespace ShopAPI.Services
             status.StatusId = dto.StatusId;
             _context.SaveChanges();
         }
-
+        private void CheckIfProductCodeIsEmpty(MakeOrderDto order)
+        {
+            foreach (var item in order.ProductCode)
+            {
+                if (String.IsNullOrEmpty(item.ProductCode))
+                {
+                    throw new BadRequestException("ProductCode can't be empty!");
+                }
+            }
+        }
         public void CreateOrderWithoutLogin(MakeOrderDto order)
         {
             _logger.LogWarning("Order CREATE_ORDER_WITHOUT_LOGIN action invoked!");
+            CheckIfProductCodeIsEmpty(order);
+
 
             UserDto userDto = new UserDto()
             {

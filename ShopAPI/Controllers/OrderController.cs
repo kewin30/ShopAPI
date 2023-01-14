@@ -22,7 +22,7 @@ namespace ShopAPI.Controllers
             _orderService = orderService;
         }
         [HttpGet("{orderId}")]
-        //[Authorize(Roles = "User")]
+        [Authorize(Roles = "User")]
         public ActionResult<OrderDto> Get([FromRoute] int orderId)
         {
             var order = _orderService.GetById(orderId);
@@ -36,7 +36,7 @@ namespace ShopAPI.Controllers
             return NoContent();
         }
         [HttpPost]
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "Admin,User")]
         public ActionResult Create([FromBody] MakeOrderDto dto)
         {
             _orderService.CreateOrder(dto);

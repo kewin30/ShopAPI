@@ -20,7 +20,12 @@ namespace ShopAPI.Middleware
             {
                 await next.Invoke(context);
             }
-            catch(BadRequestException badRequest)
+            catch (ForbidException forbidExcception)
+            {
+                context.Response.StatusCode = 403;
+                await context.Response.WriteAsync(forbidExcception.Message);
+            }
+            catch (BadRequestException badRequest)
             {
                 context.Response.StatusCode = 400;
                 await context.Response.WriteAsync(badRequest.Message);

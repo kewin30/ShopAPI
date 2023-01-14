@@ -1,6 +1,7 @@
 using AutoMapper;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -55,6 +56,7 @@ namespace ShopAPI
                 };
             });
 
+            services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
             services.AddControllers().AddFluentValidation();
             services.AddAutoMapper(this.GetType().Assembly);
             services.AddSwaggerGen();
@@ -66,6 +68,7 @@ namespace ShopAPI
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddScoped<IValidator<RegisterUserAndAddressDto>, RegisterUserDtoValidator>();
+            services.AddScoped<IUserContextService, UserContextService>();
 
             services.AddCors(options =>
             {
